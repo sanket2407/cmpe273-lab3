@@ -26,11 +26,10 @@ public class DistributedCacheService implements CacheServiceInterface {
             response = Unirest.get(this.cacheServerUrl + "/cache/{key}")
                     .header("accept", "application/json")
                     .routeParam("key", Long.toString(key)).asJson();
+            String value = response.getBody().getObject().getString("value");
         } catch (UnirestException e) {
-            System.err.println(e);
+           value = null;
         }
-        String value = response.getBody().getObject().getString("value");
-
         return value;
     }
 
