@@ -8,7 +8,7 @@ public class Client {
 
     public static void main(String[] args) throws Exception {
         
-         System.out.println("Starting Cache Client…\n");
+         System.out.println("Starting Cache Client…");
          
         List<CacheServiceInterface> link = new ArrayList<CacheServiceInterface>();
         link.add(new DistributedCacheService("http://localhost:3000"));
@@ -29,11 +29,17 @@ public class Client {
         //getting data
         for(int j=0; j<10; j++)
         {
-        	int bucket1 = Hashing.consistentHash(Hashing.md5().hashString(Integer.toString(j+1)), link.size());
-        	link.get(bucket1).get(j+1);
-        	System.out.println("http://localhost:300" + bucket1 + " get key-Value pair " + j+1 +"->"+ link.get(bucket1).get(j+1));
-
+        	//int bucket1 = Hashing.consistentHash(Hashing.md5().hashString(Integer.toString(j+1)), link.size());
+            for(int k=0; k<link.size(); k++)
+            {
+                if(link.get(k).get(j+1) != null)
+                {
+                System.out.println("http://localhost:300" + k + " get key-Value pair " +j+1 + "->" + link.get(k).get(j+1));
+                }
+            }
         }
+        
+        System.out.println("Ending Cache Client…");
     }
 
 }
