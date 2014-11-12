@@ -29,8 +29,7 @@ public class Client {
         //getting data
         for(int j=0; j<10; j++)
         {
-        	//int bucket1 = Hashing.consistentHash(Hashing.md5().hashString(Integer.toString(j+1)), link.size());
-            for(int k=0; k<link.size(); k++)
+        	for(int k=0; k<link.size(); k++)
             {
                 if(link.get(k).get(j+1) != null)
                 {
