@@ -5,53 +5,49 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-/**
- * Distributed cache service
- * 
- */
-public class DistributedCacheService implements CacheServiceInterface {
-    private final String cacheServerUrl;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-    public DistributedCacheService(String serverUrl) {
-        this.cacheServerUrl = serverUrl;
+
+public class DistributedCacheService implements CacheServiceInterface {
+    
+	ArrayList<String> cacheServerUrl =  new ArrayList<String>();
+	CRDTClient crdtClient;
+	
+    public DistributedCacheService( ArrayList<Strings> urlList) {
+        this.cacheServerUrl = urlList;
+		crdtClient = new CRDTClient(urlList);
     }
 
-    /**
-     * @see edu.sjsu.cmpe.cache.client.CacheServiceInterface#get(long)
-     */
     @Override
     public String get(long key) {
-        HttpResponse<JsonNode> response = null;
-        try {
-            response = Unirest.get(this.cacheServerUrl + "/cache/{key}")
-                    .header("accept", "application/json")
-                    .routeParam("key", Long.toString(key)).asJson();
-            String value = response.getBody().getObject().getString("value");
-        } catch (UnirestException e) {
-           value = null;
-        }
-        return value;
+		return crdtClient.getValues(key);
     }
 
-    /**
-     * @see edu.sjsu.cmpe.cache.client.CacheServiceInterface#put(long,
-     *      java.lang.String)
-     */
     @Override
     public void put(long key, String value) {
-        HttpResponse<JsonNode> response = null;
-        try {
-            response = Unirest
-                    .put(this.cacheServerUrl + "/cache/{key}/{value}")
-                    .header("accept", "application/json")
-                    .routeParam("key", Long.toString(key))
-                    .routeParam("value", value).asJson();
-        } catch (UnirestException e) {
-            System.err.println(e);
-        }
-
-        if (response.getCode() != 200) {
-            System.out.println("Failed to add to the cache.");
-        }
+       List<String> response = crdtClient.putAsync(key, value);
+		   int min = urlList.size()/2 ;
+           if (response.size() >= min) {
+               delete(key); // deleting inserted values
+           }
+       }
     }
+
+    @Override
+    public void delete(long key) {
+        if(crdtClient.deleteVal(key));
+		{
+			 System.out.println("successfully deleted");
+		}
+		else
+		{
+			 System.out.println("error in deleting");
+		}
+    }
+
 }

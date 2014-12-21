@@ -2,12 +2,7 @@ package edu.sjsu.cmpe.cache.api.resources;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -49,8 +44,7 @@ public class CacheResource {
     @PUT
     @Path("{key}/{value}")
     @Timed(name = "add-entry")
-    public Response put(@PathParam("key") LongParam key,
-            @PathParam("value") String value) {
+    public Response put(@PathParam("key") LongParam key, @PathParam("value") String value) {
         Entry entry = new Entry();
         entry.setKey(key.get());
         entry.setValue(value);
@@ -59,4 +53,14 @@ public class CacheResource {
 
         return Response.status(200).build();
     }
-}
+
+	//adding delete functionality
+    @DELETE
+    @Path("{key}")
+    @Timed(name = "delete-entry")
+    public Response delete(@PathParam("key") LongParam key) 
+	{
+        cache.delete(key.get());
+        return Response.status(200).build();
+    }
+ }

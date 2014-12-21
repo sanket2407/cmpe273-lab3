@@ -1,4 +1,4 @@
-cmpe273-lab3
+Lab - 4 CRDT 
 ============
-
-CMPE 273 Lab 3 Baseline
+The goal of this lab is to understand how CRDT works and to implement a (POC) of CRDT.
+============
